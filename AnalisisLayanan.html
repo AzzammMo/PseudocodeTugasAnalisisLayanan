@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Pulsa & Kuota</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <h1>Layanan Pulsa & Kuota</h1>
+    <div id="menuContainer">
+        <button class="start-button" onclick="pilihLayanan()">Mulai Layanan</button>
+    </div>    
+<script>
+    function isValidPhoneNumber(nomor) {
+        return nomor.length <= 13 && /^[0-9]+$/.test(nomor);
+    }
+
+    function kembaliKeMenu() {
+        Swal.fire({
+            title: 'Kembali ke Menu',
+            text: 'Apakah Anda ingin kembali ke daftar layanan?',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                pilihLayanan(); 
+            }
+        });
+    }
+
+    function pilihLayanan() {
+        Swal.fire({
+            title: 'Pilih Layanan',
+            html: `
+                <ol>
+                    <li>Informasi Pulsa & Kuota</li>
+                    <li>Cek Layanan & Promo</li>
+                    <li>Pembelian Pulsa & Kuota</li>
+                    <li>Transfer Pulsa</li>
+                    <li>Riwayat Penggunaan Pulsa</li>
+                </ol>
+                <p>Masukkan nomor layanan (1-5):</p>
+            `,
+            input: 'number',  
+            inputAttributes: {
+                min: 1,
+                max: 5,
+                step: 1
+            },
+            inputPlaceholder: 'Masukkan nomor layanan',
+            showCancelButton: true,
+            confirmButtonText: 'Lanjutkan',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value || value < 1 || value > 5) {
+                    return 'Harap masukkan nomor antara 1 sampai 5!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const layananTerpilih = parseInt(result.value);
+                switch (layananTerpilih) {
+                    case 1:
+                        informasiPulsaKuota();
+                        break;
+                    case 2:
+                        cekLayananPromo();
+                        break;
+                    case 3:
+                        pembelianPulsaKuota();
+                        break;
+                    case 4:
+                        transferPulsa();
+                        break;
+                    case 5:
+                        riwayatPenggunaanPulsa();
+                        break;
+                    default:
+                        Swal.fire('Error', 'Pilihan layanan tidak valid!', 'error');
+                }
+            }
+        });
+    }
+
+    function informasiPulsaKuota() {
+        Swal.fire({
+            title: 'Informasi Pulsa & Kuota',
+            text: 'Masukkan nomor pelanggan',
+            input: 'number',  
+            inputPlaceholder: 'Nomor pelanggan',
+            showCancelButton: true,
+            confirmButtonText: 'Lanjutkan',
+            cancelButtonText: 'Batal',
+            preConfirm: (nomorPelanggan) => {
+                if (!nomorPelanggan) {
+                    Swal.showValidationMessage('Nomor pelanggan tidak boleh kosong!');
+                } else if (!isValidPhoneNumber(nomorPelanggan)) {
+                    Swal.showValidationMessage('Nomor pelanggan tidak valid! Harap masukkan nomor hingga 13 digit.');
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Pilih Menu',
+                    input: 'radio',
+                    inputOptions: {
+                        'pulsa': 'Detail Pulsa',
+                        'kuota': 'Detail Kuota'
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Anda harus memilih salah satu!';
+                        }
+                    }
+                }).then((menuResult) => {
+                    if (menuResult.value === 'pulsa') {
+                        Swal.fire({
+                            title: 'Informasi Pulsa',
+                            html: `<p>Saldo pulsa Anda: <strong>Rp 50.000</strong></p>`,
+                            icon: 'info'
+                        }).then(() => kembaliKeMenu());
+                    } else {
+                        Swal.fire({
+                            title: 'Detail Kuota',
+                            html: `<p>Kuota internet Anda: <strong>5GB</strong></p>`,
+                            icon: 'info'
+                        }).then(() => kembaliKeMenu());
+                    }
+                });
+            }
+        });
+    }
+
+    function cekLayananPromo() {
+        Swal.fire({
+            title: 'Cek Layanan & Promo',
+            text: 'Masukkan nomor pelanggan',
+            input: 'number',  
+            inputPlaceholder: 'Nomor pelanggan',
+            showCancelButton: true,
+            confirmButtonText: 'Lanjutkan',
+            cancelButtonText: 'Batal',
+            preConfirm: (nomorPelanggan) => {
+                if (!nomorPelanggan) {
+                    Swal.showValidationMessage('Nomor pelanggan tidak boleh kosong!');
+                } else if (!isValidPhoneNumber(nomorPelanggan)) {
+                    Swal.showValidationMessage('Nomor pelanggan tidak valid! Harap masukkan nomor hingga 13 digit.');
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Promo Terkini', 'Anda mendapatkan promo kuota 10GB hanya dengan 50.000!', 'info').then(() => kembaliKeMenu());
+            }
+        });
+    }
+
+    function pembelianPulsaKuota() {
+    Swal.fire({
+        title: 'Pembelian Pulsa & Kuota',
+        text: 'Masukkan nomor pelanggan',
+        input: 'number',  
+        inputPlaceholder: 'Nomor pelanggan',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjutkan',
+        cancelButtonText: 'Batal',
+        preConfirm: (nomorPelanggan) => {
+            if (!nomorPelanggan) {
+                Swal.showValidationMessage('Nomor pelanggan tidak boleh kosong!');
+            } else if (!isValidPhoneNumber(nomorPelanggan)) {
+                Swal.showValidationMessage('Nomor pelanggan tidak valid! Harap masukkan nomor hingga 13 digit.');
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Pilih Jenis Pembelian',
+                input: 'radio',
+                inputOptions: {
+                    'pulsa': 'Pulsa',
+                    'kuota': 'Kuota'
+                },
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Anda harus memilih salah satu!';
+                    }
+                }
+            }).then((menuResult) => {
+                if (menuResult.value) {
+                    Swal.fire({
+                        title: `Masukkan Nominal ${menuResult.value === 'pulsa' ? 'Pulsa' : 'Kuota'}`,
+                        text: `Masukkan jumlah ${menuResult.value === 'pulsa' ? 'pulsa' : 'kuota'} yang ingin dibeli`,
+                        input: 'number',
+                        inputPlaceholder: 'Nominal',
+                        confirmButtonText: 'Lanjutkan',
+                        preConfirm: (nominal) => {
+                            if (!nominal || nominal <= 0) {
+                                Swal.showValidationMessage('Nominal tidak boleh kosong atau kurang dari Rp 1!');
+                            }
+                        }
+                    }).then((nominalResult) => {
+                        if (nominalResult.isConfirmed) {
+                            if (menuResult.value === 'pulsa') {
+                                Swal.fire('Pembayaran Berhasil', `Pembelian pulsa Rp ${nominalResult.value} berhasil, saldo Anda bertambah ${nominalResult.value}`, 'success').then(() => kembaliKeMenu());
+                            } else {
+                                Swal.fire('Pembayaran Berhasil', `Pembelian kuota ${nominalResult.value}GB berhasil, kuota Anda bertambah ${nominalResult.value}GB`, 'success').then(() => kembaliKeMenu());
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
+    function transferPulsa() {
+    Swal.fire({
+        title: 'Transfer Pulsa',
+        text: 'Masukkan nomor pelanggan',
+        input: 'number', 
+        inputPlaceholder: 'Nomor pelanggan',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjutkan',
+        cancelButtonText: 'Batal',
+        preConfirm: (nomorPelanggan) => {
+            if (!nomorPelanggan) {
+                Swal.showValidationMessage('Nomor pelanggan tidak boleh kosong!');
+            } else if (!isValidPhoneNumber(nomorPelanggan)) {
+                Swal.showValidationMessage('Nomor pelanggan tidak valid! Harap masukkan nomor hingga 13 digit.');
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Masukkan Nomor Tujuan',
+                input: 'number',  
+                inputPlaceholder: 'Nomor tujuan',
+                confirmButtonText: 'Lanjutkan',
+                preConfirm: (nomorTujuan) => {
+                    if (!nomorTujuan) {
+                        Swal.showValidationMessage('Nomor tujuan tidak boleh kosong!');
+                    } else if (!isValidPhoneNumber(nomorTujuan)) {
+                        Swal.showValidationMessage('Nomor tujuan tidak valid! Harap masukkan nomor hingga 13 digit.');
+                    }
+                }
+            }).then((transferResult) => {
+                if (transferResult.isConfirmed) {
+                    Swal.fire({
+                        title: 'Masukkan Nominal Transfer',
+                        text: 'Masukkan jumlah pulsa yang ingin ditransfer',
+                        input: 'number',
+                        inputPlaceholder: 'Nominal pulsa (Rp)',
+                        confirmButtonText: 'Transfer',
+                        preConfirm: (nominalTransfer) => {
+                            if (!nominalTransfer || nominalTransfer <= 0) {
+                                Swal.showValidationMessage('Nominal transfer tidak boleh kosong atau kurang dari Rp 1!');
+                            }
+                        }
+                    }).then((nominalResult) => {
+                        if (nominalResult.isConfirmed) {
+                            Swal.fire('Sukses', `Pulsa Rp ${nominalResult.value} berhasil ditransfer`, 'success').then(() => kembaliKeMenu());
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
+    function riwayatPenggunaanPulsa() {
+        const penggunaanPulsa = `
+            <p>Pembelian Kuota 10GB: Rp 50.000</p>
+            <p>Transfer Pulsa ke 081234567890: Rp 15.000</p>
+        `;
+
+        Swal.fire({
+            title: 'Riwayat Penggunaan Pulsa',
+            html: penggunaanPulsa,
+            icon: 'info'
+        }).then(() => kembaliKeMenu());
+    }
+</script>
+</body>
+</html>
